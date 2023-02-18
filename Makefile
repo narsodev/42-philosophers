@@ -6,7 +6,7 @@
 #    By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/20 17:51:10 by ngonzale          #+#    #+#              #
-#    Updated: 2023/02/05 20:12:26 by ngonzale         ###   ########.fr        #
+#    Updated: 2023/02/18 13:57:35 by ngonzale         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME			:= philosophers
 SRC_DIR		:= src
 OBJ_DIR		:= obj
 
-FILES		:= main
+FILES		:= main create free routine
 
 SRCS		:= $(addsuffix .c, $(addprefix $(SRC_DIR)/, $(FILES)))
 
@@ -26,7 +26,7 @@ OBJS_CREATED:= $(shell if [ -d $(OBJ_DIR) ]; then ls -l $(OBJ_DIR)/* | grep -c "
 
 CC			:= gcc
 
-CFLAGS		:= -Wall -Wextra -Werror
+CFLAGS		:= -Wall -Wextra -Werror -pthread
 
 LIBFT 	:= libft
 
