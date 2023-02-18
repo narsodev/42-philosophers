@@ -6,7 +6,7 @@
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:52:08 by ngonzale          #+#    #+#             */
-/*   Updated: 2023/02/18 18:17:36 by ngonzale         ###   ########.fr       */
+/*   Updated: 2023/02/18 19:29:37 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ t_data	*ft_create_data(int argc, char *argv[])
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
+	data->start_time = ft_get_time();
 	if (argc == 6)
 		data->meals_required = ft_atoi(argv[5]);
 	else

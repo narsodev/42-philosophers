@@ -14,6 +14,18 @@
 #include <unistd.h>
 #include <sys/time.h>
 
+// sleep function without usleep, using a while loop
+void	ft_sleep(int milliseconds)
+{
+	int	start;
+
+	start = ft_get_time();
+	while (ft_get_time() - start < milliseconds)
+	{
+		usleep(100);
+	}
+}
+
 int	ft_get_time()
 {
 	struct timeval	tv;
@@ -44,33 +56,36 @@ void	*routine(void *arg)
 	}
 
 	while (1) {
+
 		pthread_mutex_lock(m1);
 
 		pthread_mutex_lock(&thread_data->data->mutex_write);
-		ft_printf("%d %d has taken a fork\n", ft_get_time(), philo->n);
+		ft_printf("%d %d has taken a fork\n", ft_get_time() - thread_data->data->start_time, philo->n);
 		pthread_mutex_unlock(&thread_data->data->mutex_write);
 
 		pthread_mutex_lock(m2);
 
 		pthread_mutex_lock(&thread_data->data->mutex_write);
-		ft_printf("%d %d has taken a fork\n", ft_get_time(), philo->n);
-		ft_printf("%d %d is eating\n", ft_get_time(), philo->n);
+		ft_printf("%d %d has taken a fork\n", ft_get_time() - thread_data->data->start_time, philo->n);
+		ft_printf("%d %d is eating\n", ft_get_time() - thread_data->data->start_time, philo->n);
 		pthread_mutex_unlock(&thread_data->data->mutex_write);
-		usleep(thread_data->data->time_to_eat * 1000);
+
 		philo->last_meal = ft_get_time(); 
-		if (philo->meals_eaten != -1)
-			philo->meals_eaten++;
+
+		ft_sleep(thread_data->data->time_to_eat);
+
+		philo->meals_eaten++;
 
 		pthread_mutex_unlock(m1);
 		pthread_mutex_unlock(m2);
 
 		pthread_mutex_lock(&thread_data->data->mutex_write);
-		ft_printf("%d %d is sleeping\n", ft_get_time(), philo->n);
+		ft_printf("%d %d is sleeping\n", ft_get_time() - thread_data->data->start_time, philo->n);
 		pthread_mutex_unlock(&thread_data->data->mutex_write);
-		usleep(thread_data->data->time_to_sleep * 1000);
+		ft_sleep(thread_data->data->time_to_sleep);
 
 		pthread_mutex_lock(&thread_data->data->mutex_write);
-		ft_printf("%d %d is thinking\n", ft_get_time(), philo->n);
+		ft_printf("%d %d is thinking\n", ft_get_time() - thread_data->data->start_time, philo->n);
 		pthread_mutex_unlock(&thread_data->data->mutex_write);
 	}
 	return (NULL);

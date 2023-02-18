@@ -22,6 +22,7 @@ int	ft_start_philo(t_thread_data *thread_data)
 
 	philo = thread_data->lst_philo->content;
 	philo->last_meal = ft_get_time();
+	// thread_data->data->start_time = philo->last_meal;
 	if (pthread_mutex_init(&philo->fork, NULL) != 0)
 	{
 		// free(philo);
@@ -56,7 +57,7 @@ void ft_leaks()
 
 int	main(int argc, char *argv[])
 {
-	atexit(ft_leaks);
+	// atexit(ft_leaks);
 	// pthread_t	t1;
 	// pthread_t	t2;
 	t_data		*data;
@@ -96,7 +97,7 @@ int	main(int argc, char *argv[])
 	while (1)
 	{
 		philo = tmp->content;
-		if (philo->meals_eaten == data->meals_required)
+		if (data->meals_required != -1 && philo->meals_eaten == data->meals_required)
 			philos_eaten++;
 		if (philos_eaten == data->n_philos)
 		{
@@ -105,13 +106,15 @@ int	main(int argc, char *argv[])
 			exit(0);
 			break;
 		}
+		// pthread_mutex_lock(&philo->mutex_meals);
 		if (philo->last_meal + data->time_to_die < ft_get_time())
 		{
 			pthread_mutex_lock(&thread_data->data->mutex_write);
-			ft_printf("Philo %d died\n", philo->n);
+			ft_printf("%d %d died\n", ft_get_time() - data->start_time, philo->n);
 			exit(0);
 			break;
 		}
+		// pthread_mutex_unlock(&philo->mutex_meals);
 		tmp = tmp->next;
 	}
 

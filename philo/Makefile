@@ -6,11 +6,11 @@
 #    By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/20 17:51:10 by ngonzale          #+#    #+#              #
-#    Updated: 2023/02/18 13:57:35 by ngonzale         ###   ########.fr        #
+#    Updated: 2023/02/18 20:01:32 by ngonzale         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME			:= philosophers
+NAME			:= philo
 
 SRC_DIR		:= src
 OBJ_DIR		:= obj
@@ -26,7 +26,7 @@ OBJS_CREATED:= $(shell if [ -d $(OBJ_DIR) ]; then ls -l $(OBJ_DIR)/* | grep -c "
 
 CC			:= gcc
 
-CFLAGS		:= -Wall -Wextra -Werror -pthread
+CFLAGS		:= -Wall -Wextra -Werror -pthread -g # -fsanitize=thread
 
 LIBFT 	:= libft
 
