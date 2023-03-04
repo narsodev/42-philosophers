@@ -24,6 +24,22 @@ void	ft_wait_end_of_routine(void *content)
 	pthread_mutex_destroy(&philo->mutex_meals);
 }
 
+int	ft_check_philos_deadtime(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->mutex_meals);
+	if (philo->last_meal + philo->data->time_to_die < ft_get_time())
+	{
+		ft_print_action(philo, "died");
+		pthread_mutex_lock(&philo->data->mutex_dead);
+		philo->data->dead = 1;
+		pthread_mutex_unlock(&philo->data->mutex_dead);
+		pthread_mutex_unlock(&philo->mutex_meals);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->mutex_meals);
+	return (0);
+}
+
 void	ft_check_philos_state(t_data *data)
 {
 	t_list	*tmp;
@@ -40,17 +56,8 @@ void	ft_check_philos_state(t_data *data)
 		}
 		pthread_mutex_unlock(&data->mutex_eaten);
 		philo = tmp->content;
-		pthread_mutex_lock(&philo->mutex_meals);
-		if (philo->last_meal + data->time_to_die < ft_get_time())
-		{
-			ft_print_action(philo, "died");
-			pthread_mutex_lock(&data->mutex_dead);
-			data->dead = 1;
-			pthread_mutex_unlock(&data->mutex_dead);
-			pthread_mutex_unlock(&philo->mutex_meals);
+		if (ft_check_philos_deadtime(philo))
 			break ;
-		}
-		pthread_mutex_unlock(&philo->mutex_meals);
 		if (tmp->next)
 			tmp = tmp->next;
 		else
