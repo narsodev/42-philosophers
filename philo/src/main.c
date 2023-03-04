@@ -40,24 +40,26 @@ int	ft_check_philos_deadtime(t_philo *philo)
 	return (0);
 }
 
+int	ft_check_philos_eaten(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->data->mutex_eaten);
+	if (philo->data->eaten == philo->data->n_philos)
+	{
+		pthread_mutex_unlock(&philo->data->mutex_eaten);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->data->mutex_eaten);
+	return (0);
+}
+
 void	ft_check_philos_state(t_data *data)
 {
 	t_list	*tmp;
-	t_philo	*philo;
 
 	tmp = data->philos;
-	while (tmp)
+	while (!ft_check_philos_deadtime(tmp->content)
+		&& !ft_check_philos_eaten(tmp->content))
 	{
-		pthread_mutex_lock(&data->mutex_eaten);
-		if (data->eaten == data->n_philos)
-		{
-			pthread_mutex_unlock(&data->mutex_eaten);
-			break ;
-		}
-		pthread_mutex_unlock(&data->mutex_eaten);
-		philo = tmp->content;
-		if (ft_check_philos_deadtime(philo))
-			break ;
 		if (tmp->next)
 			tmp = tmp->next;
 		else
