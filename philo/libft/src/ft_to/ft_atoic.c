@@ -6,9 +6,11 @@
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/19 19:57:19 by ngonzale          #+#    #+#             */
-/*   Updated: 2023/03/04 16:41:53 by ngonzale         ###   ########.fr       */
+/*   Updated: 2023/03/04 18:44:18 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "libft.h"
 
 static int	ft_isspace(char c)
 {
@@ -18,10 +20,10 @@ static int	ft_isspace(char c)
 	return (0);
 }
 
-static void	ft_check(int c, int signo, int *total, int *error)
+static void	ft_check_atoi(int c, int signo, int *total, int *error)
 {
-	if (error)
-		*error = c != '\0';
+	if (error && c != 0)
+		*error = 1;
 	if (signo == 1 && *total < 0)
 	{
 		if (error)
@@ -36,7 +38,7 @@ static void	ft_check(int c, int signo, int *total, int *error)
 	}
 }
 
-int ft_atoic(const char *str, int *error)
+int	ft_atoic(const char *str, int *error)
 {
 	int	i;
 	int	total;
@@ -58,6 +60,6 @@ int ft_atoic(const char *str, int *error)
 		i++;
 	}
 	total *= signo;
-	ft_check(str[i], signo, &total, error);
+	ft_check_atoi(str[i], signo, &total, error);
 	return (total);
 }

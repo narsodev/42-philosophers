@@ -6,7 +6,7 @@
 #    By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/20 17:51:10 by ngonzale          #+#    #+#              #
-#    Updated: 2023/03/04 17:01:55 by ngonzale         ###   ########.fr        #
+#    Updated: 2023/03/04 18:58:59 by ngonzale         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME			:= philo
 SRC_DIR		:= src
 OBJ_DIR		:= obj
 
-FILES		:= main create free routine routine_utils utils
+FILES		:= main create free routine routine_utils utils start
 
 SRCS		:= $(addsuffix .c, $(addprefix $(SRC_DIR)/, $(FILES)))
 
@@ -23,7 +23,7 @@ OBJS		:= $(addsuffix .o, $(addprefix $(OBJ_DIR)/, $(FILES)))
 
 CC			:= gcc
 
-CFLAGS		:= -Wall -Wextra -Werror -pthread # -fsanitize=leak # -g # -fsanitize=thread
+CFLAGS		:= -Wall -Wextra -Werror -pthread
 
 LIBFT 	:= libft
 

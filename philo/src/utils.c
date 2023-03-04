@@ -6,14 +6,14 @@
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 20:14:04 by ngonzale          #+#    #+#             */
-/*   Updated: 2023/02/22 20:23:01 by ngonzale         ###   ########.fr       */
+/*   Updated: 2023/03/04 17:53:48 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/time.h>
 #include <unistd.h>
 
-int	ft_get_time()
+int	ft_get_time(void)
 {
 	struct timeval	tv;
 

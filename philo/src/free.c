@@ -6,7 +6,7 @@
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:55:23 by ngonzale          #+#    #+#             */
-/*   Updated: 2023/02/23 21:39:06 by ngonzale         ###   ########.fr       */
+/*   Updated: 2023/03/04 18:07:26 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,23 +20,7 @@ void	ft_free_philo(void *content)
 	if (!content)
 		return ;
 	philo = content;
-	// if (philo->fork)
-	// {
-	// 	if (pthread_mutex_destroy(&philo->fork) != 0)
-	// 	{
-	// 		ft_putstr_fd("Error destroying mutex\n", 2);
-	// 	}
-	// }
-	/*
-	if (philo->thread)
-	{
-		if (pthread_detach(philo->thread) != 0)
-		{
-			ft_putstr_fd("Error detaching thread\n", 2);
-		}
-	}
-	*/
-	free(philo);
+	free(content);
 }
 
 void	ft_free_data(t_data *data)
@@ -48,4 +32,3 @@ void	ft_free_data(t_data *data)
 	pthread_mutex_destroy(&data->mutex_eaten);
 	free(data);
 }
-
