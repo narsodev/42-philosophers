@@ -67,14 +67,8 @@ void	ft_check_philos_state(t_data *data)
 	}
 }
 
-void	ft_leaks()
-{
-	system("leaks -q philo");
-}
-
 int	main(int argc, char *argv[])
 {
-	atexit(ft_leaks);
 	t_data		*data;
 
 	data = ft_create_data(argc, argv);
