@@ -1,25 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstclear.c                                      :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/21 16:10:14 by ngonzale          #+#    #+#             */
-/*   Updated: 2023/02/22 17:19:12 by ngonzale         ###   ########.fr       */
+/*   Created: 2023/02/22 20:14:04 by ngonzale          #+#    #+#             */
+/*   Updated: 2023/02/22 20:23:01 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <sys/time.h>
+#include <unistd.h>
 
-void	ft_lstclear(t_list **lst, void (*del)(void *))
+int	ft_get_time()
 {
-	t_list	*next;
+	struct timeval	tv;
 
-	while (*lst)
-	{
-		next = (*lst)->next;
-		ft_lstdelone(*lst, del);
-		*lst = next;
-	}
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+void	ft_sleep(int milliseconds)
+{
+	int	start;
+
+	start = ft_get_time();
+	while (ft_get_time() - start < milliseconds)
+		usleep(50);
 }

@@ -11,38 +11,21 @@
 /* ************************************************************************** */
 
 #include "philosophers.h"
-#include <unistd.h>
-#include <sys/time.h>
-
-// sleep function without usleep, using a while loop
-void	ft_sleep(int milliseconds)
-{
-	int	start;
-
-	start = ft_get_time();
-	while (ft_get_time() - start < milliseconds)
-	{
-		usleep(100);
-	}
-}
-
-int	ft_get_time()
-{
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
-}
 
 void	*routine(void *arg)
 {
-	t_thread_data	*thread_data;
+	t_list *lst_philo;
 	t_philo	*philo;
 	t_philo	*next_philo;
+	t_data	*data;
 
-	thread_data = arg;
-	philo = thread_data->lst_philo->content;
-	next_philo = thread_data->lst_philo->next->content;
+	lst_philo = arg;
+	philo = lst_philo->content;
+	data = philo->data;
+	if (lst_philo->next)
+		next_philo = lst_philo->next->content;
+	else
+		next_philo = data->philos->content;
 
 	pthread_mutex_t	*m1;
 	pthread_mutex_t	*m2;
@@ -55,38 +38,32 @@ void	*routine(void *arg)
 		m2 = &philo->fork;
 	}
 
-	while (1) {
-
+	while (!ft_check_meals(data) && !ft_check_dead(data)) {
 		pthread_mutex_lock(m1);
-
-		pthread_mutex_lock(&thread_data->data->mutex_write);
-		ft_printf("%d %d has taken a fork\n", ft_get_time() - thread_data->data->start_time, philo->n);
-		pthread_mutex_unlock(&thread_data->data->mutex_write);
-
+		ft_print_action(philo, "has taken a fork");
+		if (m1 == m2) {
+			pthread_mutex_unlock(m1);
+			break;
+		}
 		pthread_mutex_lock(m2);
-
-		pthread_mutex_lock(&thread_data->data->mutex_write);
-		ft_printf("%d %d has taken a fork\n", ft_get_time() - thread_data->data->start_time, philo->n);
-		ft_printf("%d %d is eating\n", ft_get_time() - thread_data->data->start_time, philo->n);
-		pthread_mutex_unlock(&thread_data->data->mutex_write);
-
+		ft_print_action(philo, "has taken a fork");
+		ft_print_action(philo, "is eating");
+		pthread_mutex_lock(&philo->mutex_meals);
 		philo->last_meal = ft_get_time(); 
-
-		ft_sleep(thread_data->data->time_to_eat);
-
+		pthread_mutex_unlock(&philo->mutex_meals);
+		ft_sleep(data->time_to_eat);
 		philo->meals_eaten++;
-
+		if (philo->meals_eaten == data->meals_required)
+		{
+			pthread_mutex_lock(&data->mutex_eaten);
+			data->eaten++;
+			pthread_mutex_unlock(&data->mutex_eaten);
+		}
 		pthread_mutex_unlock(m1);
 		pthread_mutex_unlock(m2);
-
-		pthread_mutex_lock(&thread_data->data->mutex_write);
-		ft_printf("%d %d is sleeping\n", ft_get_time() - thread_data->data->start_time, philo->n);
-		pthread_mutex_unlock(&thread_data->data->mutex_write);
-		ft_sleep(thread_data->data->time_to_sleep);
-
-		pthread_mutex_lock(&thread_data->data->mutex_write);
-		ft_printf("%d %d is thinking\n", ft_get_time() - thread_data->data->start_time, philo->n);
-		pthread_mutex_unlock(&thread_data->data->mutex_write);
+		ft_print_action(philo, "is sleeping");
+		ft_sleep(data->time_to_sleep);
+		ft_print_action(philo, "is thinking");
 	}
 	return (NULL);
 }

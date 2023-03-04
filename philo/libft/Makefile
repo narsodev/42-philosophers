@@ -6,7 +6,7 @@
 #    By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/20 17:51:10 by ngonzale          #+#    #+#              #
-#    Updated: 2023/02/18 13:34:28 by ngonzale         ###   ########.fr        #
+#    Updated: 2023/03/04 16:32:52 by ngonzale         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,7 @@ STR_NAMES	:= ft_split ft_strchr ft_strdup ft_striteri ft_strjoin \
 STR_FILES	:= $(addprefix $(STR_DIR)/, $(STR_NAMES)) 
 
 TO_DIR		:= ft_to
-TO_NAMES	:= ft_atoi ft_itoa ft_tolower ft_toupper ft_uitoa \
+TO_NAMES	:= ft_atoi ft_atoic ft_itoa ft_tolower ft_toupper ft_uitoa \
 	ft_uitoa_base ft_ulltoa_base ft_c_to_str
 TO_FILES	:= $(addprefix $(TO_DIR)/, $(TO_NAMES))
 

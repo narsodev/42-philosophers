@@ -16,38 +16,96 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int	ft_start_philo(t_thread_data *thread_data)
+int	ft_start_philo(t_list *lst_philo)
 {
 	t_philo	*philo;
 
-	philo = thread_data->lst_philo->content;
+	philo = lst_philo->content;
 	philo->last_meal = ft_get_time();
-	// thread_data->data->start_time = philo->last_meal;
 	if (pthread_mutex_init(&philo->fork, NULL) != 0)
-	{
-		// free(philo);
-		return (1);
-	}
-	if (pthread_create(&philo->thread, NULL, &routine, thread_data) != 0)
+		return (0);
+	if (pthread_mutex_init(&philo->mutex_meals, NULL) != 0)
 	{
 		pthread_mutex_destroy(&philo->fork);
-		// free(philo);
-		return (1);
+		return (0);
+	}
+	if (pthread_create(&philo->thread, NULL, &routine, lst_philo) != 0)
+	{
+		pthread_mutex_destroy(&philo->fork);
+		pthread_mutex_destroy(&philo->mutex_meals);
+		return (0);
+	}
+	return (1);
+}
+
+int ft_start_philos(t_data *data)
+{
+	t_list	*tmp;
+	t_list	*tmp_cleaner;
+
+	tmp = data->philos;
+	while (tmp)
+	{
+		((t_philo *)tmp->content)->data = data;
+		if (!ft_start_philo(tmp))
+			{
+				tmp_cleaner = data->philos;
+				while (tmp_cleaner != tmp)
+				{
+					pthread_detach(((t_philo *)tmp_cleaner->content)->thread);
+					pthread_mutex_destroy(&((t_philo *)tmp_cleaner->content)->fork);
+					pthread_mutex_destroy(&((t_philo *)tmp_cleaner->content)->mutex_meals);
+					tmp_cleaner = tmp_cleaner->next;
+				}
+				return (1);
+			}
+		tmp = tmp->next;
 	}
 	return (0);
 }
 
-
-void	ft_iter(void *content)
+void	ft_wait_end_of_routine(void *content)
 {
 	t_philo	*philo;
 
 	philo = content;
-	if (pthread_join(philo->thread, NULL) != 0)
-	{
+	pthread_join(philo->thread, NULL);
+	pthread_mutex_destroy(&philo->fork);
+	pthread_mutex_destroy(&philo->mutex_meals);
+}
 
+void ft_check_philos_state(t_data *data)
+{
+	t_list	*tmp;
+	t_philo	*philo;
+
+	tmp = data->philos;
+	while (tmp)
+	{
+		pthread_mutex_lock(&data->mutex_eaten);
+		if (data->eaten == data->n_philos)
+		{
+			pthread_mutex_unlock(&data->mutex_eaten);
+			break;
+		}
+		pthread_mutex_unlock(&data->mutex_eaten);
+		philo = tmp->content;
+		pthread_mutex_lock(&philo->mutex_meals);
+		if (philo->last_meal + data->time_to_die < ft_get_time())
+		{
+			ft_print_action(philo, "died");
+			pthread_mutex_lock(&data->mutex_dead);
+			data->dead = 1;
+			pthread_mutex_unlock(&data->mutex_dead);
+			pthread_mutex_unlock(&philo->mutex_meals);
+		 	break;
+		 }
+		pthread_mutex_unlock(&philo->mutex_meals);
+		if (tmp->next)
+			tmp = tmp->next;
+		else
+			tmp = data->philos;
 	}
-	ft_printf("Philo %d\n", philo->n);
 }
 
 void ft_leaks()
@@ -58,90 +116,21 @@ void ft_leaks()
 int	main(int argc, char *argv[])
 {
 	// atexit(ft_leaks);
-	// pthread_t	t1;
-	// pthread_t	t2;
 	t_data		*data;
 
 	data = ft_create_data(argc, argv);
 	if (!data)
 		return (1);
-	
-	t_list	*tmp;
-	t_thread_data	*thread_data;
-
-	tmp = data->philos;
-	while (1)
+	data->start_time = ft_get_time();
+	if (ft_start_philos(data) != 0)
 	{
-		thread_data = ft_calloc(1, sizeof(t_thread_data));
-		if (!thread_data)
-		{
-			ft_free_data(data);
-			return (1);
-		}
-		thread_data->data = data;
-		thread_data->lst_philo = tmp;
-
-		if (!tmp->next)
-			tmp->next = data->philos;
-		if (ft_start_philo(thread_data) != 0)
-			break;
-		if (tmp->next == data->philos)
-			break;
-		tmp = tmp->next;
+		ft_free_data(data);
+		return (1);
 	}
-
-
-	t_philo	*philo;
-	tmp = data->philos;
-	int philos_eaten = 0;
-	while (1)
-	{
-		philo = tmp->content;
-		if (data->meals_required != -1 && philo->meals_eaten == data->meals_required)
-			philos_eaten++;
-		if (philos_eaten == data->n_philos)
-		{
-			pthread_mutex_lock(&thread_data->data->mutex_write);
-			ft_printf("All philos have eaten %d times\n", philo->meals_eaten);
-			exit(0);
-			break;
-		}
-		// pthread_mutex_lock(&philo->mutex_meals);
-		if (philo->last_meal + data->time_to_die < ft_get_time())
-		{
-			pthread_mutex_lock(&thread_data->data->mutex_write);
-			ft_printf("%d %d died\n", ft_get_time() - data->start_time, philo->n);
-			exit(0);
-			break;
-		}
-		// pthread_mutex_unlock(&philo->mutex_meals);
-		tmp = tmp->next;
-	}
-
-	pthread_join(((t_philo *)data->philos->content)->thread, NULL);
-	pthread_join(((t_philo *)data->philos->next->content)->thread, NULL);
-
-	return 1;
-	// tmp->next = NULL;
-	ft_lstiter(data->philos, ft_iter);
+	ft_check_philos_state(data);
+	ft_lstiter(data->philos, ft_wait_end_of_routine);
+	if (data->meals_required == 0 || (!data->dead && data->eaten == data->n_philos))
+		ft_printf("All philos have eaten %d times\n", data->meals_required);
 	ft_free_data(data);
-
 	return (0);
-
-/*
-	pthread_mutex_init(&g_mutex, NULL);
-	if (pthread_create(&t1, NULL, &routine, NULL) != 0)
-		return (1);
-	if (pthread_create(&t2, NULL, &routine, NULL) != 0)
-		return (1);
-	if (pthread_join(t1, NULL) != 0)
-		return (1);
-	if (pthread_join(t2, NULL) != 0)
-		return (1);
-	pthread_mutex_destroy(&g_mutex);
-	(void) argc;
-	(void) argv;
-	ft_printf("Hello world\n");
-	return (1);
-	*/
 }
