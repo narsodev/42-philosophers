@@ -1,34 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   ft_flag_hash.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/18 13:55:23 by ngonzale          #+#    #+#             */
+/*   Created: 2022/05/18 01:40:25 by ngonzale          #+#    #+#             */
 /*   Updated: 2023/03/05 13:55:52 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
 #include <stdlib.h>
+#include "philo.h"
 
-void	ft_free_philo(void *content)
+char	*ft_flag_hash(char *str, char type)
 {
-	t_philo	*philo;
+	char	*s;
 
-	if (!content)
-		return ;
-	philo = content;
-	free(content);
-}
-
-void	ft_free_data(t_data *data)
-{
-	if (data->philos)
-		ft_lstclear(&data->philos, ft_free_philo);
-	pthread_mutex_destroy(&data->mutex_write);
-	pthread_mutex_destroy(&data->mutex_dead);
-	pthread_mutex_destroy(&data->mutex_eaten);
-	free(data);
+	if (type == 'x' || type == 'p')
+		s = ft_strjoin("0x", str);
+	else
+		s = ft_strjoin("0X", str);
+	free (str);
+	return (s);
 }

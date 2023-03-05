@@ -6,11 +6,11 @@
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 18:53:17 by ngonzale          #+#    #+#             */
-/*   Updated: 2023/03/04 18:53:24 by ngonzale         ###   ########.fr       */
+/*   Updated: 2023/03/05 14:04:13 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
 
 int	ft_start_philo(t_list *lst_philo)
 {
@@ -34,10 +34,26 @@ int	ft_start_philo(t_list *lst_philo)
 	return (1);
 }
 
+void	ft_start_philos_error(t_data *data, t_list *philo_error)
+{
+	t_list	*tmp;
+
+	pthread_mutex_lock(&data->mutex_dead);
+	data->dead = 1;
+	pthread_mutex_unlock(&data->mutex_dead);
+	tmp = data->philos;
+	while (tmp != philo_error)
+	{
+		pthread_detach(((t_philo *)tmp->content)->thread);
+		pthread_mutex_destroy(&((t_philo *)tmp->content)->fork);
+		pthread_mutex_destroy(&((t_philo *)tmp->content)->mutex_meals);
+		tmp = tmp->next;
+	}
+}
+
 int	ft_start_philos(t_data *data)
 {
 	t_list	*tmp;
-	t_list	*tmp_cleaner;
 
 	tmp = data->philos;
 	while (tmp)
@@ -45,15 +61,7 @@ int	ft_start_philos(t_data *data)
 		((t_philo *)tmp->content)->data = data;
 		if (!ft_start_philo(tmp))
 		{
-			tmp_cleaner = data->philos;
-			while (tmp_cleaner != tmp)
-			{
-				pthread_detach(((t_philo *)tmp_cleaner->content)->thread);
-				pthread_mutex_destroy(&((t_philo *)tmp_cleaner->content)->fork);
-				pthread_mutex_destroy(
-					&((t_philo *)tmp_cleaner->content)->mutex_meals);
-				tmp_cleaner = tmp_cleaner->next;
-			}
+			ft_start_philos_error(data, tmp);
 			return (1);
 		}
 		tmp = tmp->next;

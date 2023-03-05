@@ -6,59 +6,64 @@
 #    By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/20 17:51:10 by ngonzale          #+#    #+#              #
-#    Updated: 2023/03/04 18:58:59 by ngonzale         ###   ########.fr        #
+#    Updated: 2023/03/05 14:03:16 by ngonzale         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			:= philo
 
-SRC_DIR		:= src
-OBJ_DIR		:= obj
+SRC_DIR			:= src
+OBJ_DIR			:= obj
+SRC_UTILS_DIR	:= utils
+OBJ_UTILS_DIR	:= obj/utils
 
-FILES		:= main create free routine routine_utils utils start
+FILES			:= main create free routine routine_utils start \
+					utils1 utils2 utils3 utils4 utils5 utils6 utils7 \
+					ft_printf ft_flag_hash  \
+					ft_flag_plus ft_flag_space \
+					ft_flags ft_types
 
-SRCS		:= $(addsuffix .c, $(addprefix $(SRC_DIR)/, $(FILES)))
+UTILS_FILES		:= $(addprefix $(SRC_UTILS_DIR)/, $(UTILS_FILES))
+			
+FILES			+= $(UTILS_FILES)
 
-OBJS		:= $(addsuffix .o, $(addprefix $(OBJ_DIR)/, $(FILES)))
+SRCS			:= $(addsuffix .c, $(addprefix $(SRC_DIR)/, $(FILES)))
 
-CC			:= gcc
+OBJS			:= $(addsuffix .o, $(addprefix $(OBJ_DIR)/, $(FILES)))
 
-CFLAGS		:= -Wall -Wextra -Werror -pthread
+CC				:= gcc
 
-LIBFT 	:= libft
+CFLAGS			:= -Wall -Wextra -Werror -pthread
 
-LIB			:= -L $(LIBFT) -l ft
+INCLUDE			:= -I .
 
-INCLUDE		:= -I . -I $(LIBFT)
+RM				:= rm -f
 
-RM			:= rm -f
-
-all:		$(NAME)
+all:	$(NAME)
 
 clean:
 	@echo "Removing philosophers objects..."
 	@$(RM) $(OBJS)
 	@$(RM) -r $(OBJ_DIR)
-	@make clean -C $(LIBFT)
 
-fclean:		clean
+fclean:	clean
 	@echo "Removing philosophers..."
 	@$(RM) $(NAME)
-	@make fclean -C $(LIBFT)
 
-re:			fclean all
+re:	fclean all
 
-$(NAME):	$(OBJS) | $(LIBFT)/libft.a
-	$(CC) $^ $(CFLAGS) $(LIB) -o $@ 
+$(NAME):	$(OBJS)
+	@echo "Compiling philosophers..."
+	@$(CC) $^ $(CFLAGS) $(LIB) -o $@ 
 
-$(LIBFT)/libft.a:
-	@make -C $(LIBFT)
-
-$(OBJS): $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
-
+$(OBJS):	$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c | $(OBJ_DIR)
+	@echo "Compiling $<..."
+	@$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 $(OBJ_DIR):
+	@mkdir -p $@
+
+$(OBJ_DIR)/$(SRC_UTILS_DIR):
 	@mkdir -p $@
 
 .PHONY: all clean fclean re

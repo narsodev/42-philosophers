@@ -1,34 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   ft_flag_space.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/18 13:55:23 by ngonzale          #+#    #+#             */
+/*   Created: 2022/05/18 01:43:42 by ngonzale          #+#    #+#             */
 /*   Updated: 2023/03/05 13:55:52 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
 #include <stdlib.h>
+#include "philo.h"
 
-void	ft_free_philo(void *content)
+char	*ft_flag_space(char *str)
 {
-	t_philo	*philo;
+	char	*s;
 
-	if (!content)
-		return ;
-	philo = content;
-	free(content);
-}
-
-void	ft_free_data(t_data *data)
-{
-	if (data->philos)
-		ft_lstclear(&data->philos, ft_free_philo);
-	pthread_mutex_destroy(&data->mutex_write);
-	pthread_mutex_destroy(&data->mutex_dead);
-	pthread_mutex_destroy(&data->mutex_eaten);
-	free(data);
+	if (*str == '-')
+		return (str);
+	s = ft_strjoin(" ", str);
+	free(str);
+	return (s);
 }

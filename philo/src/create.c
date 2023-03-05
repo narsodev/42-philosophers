@@ -6,12 +6,12 @@
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/18 13:52:08 by ngonzale          #+#    #+#             */
-/*   Updated: 2023/03/04 18:06:48 by ngonzale         ###   ########.fr       */
+/*   Updated: 2023/03/05 13:55:52 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
-#include "philosophers.h"
+#include "philo.h"
 #include <stdlib.h>
 
 t_philo	*ft_create_philo(int n)

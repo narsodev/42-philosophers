@@ -6,11 +6,11 @@
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/23 21:03:29 by ngonzale          #+#    #+#             */
-/*   Updated: 2023/03/04 17:52:22 by ngonzale         ###   ########.fr       */
+/*   Updated: 2023/03/05 13:55:52 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
 
 int	ft_check_meals(t_data *data)
 {

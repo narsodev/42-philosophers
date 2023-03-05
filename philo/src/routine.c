@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
 
 int	ft_philo_eat(t_data *data, t_philo *philo,
 	pthread_mutex_t *m1, pthread_mutex_t *m2)
