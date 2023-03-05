@@ -6,7 +6,7 @@
 /*   By: ngonzale <ngonzale@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/04 18:53:17 by ngonzale          #+#    #+#             */
-/*   Updated: 2023/03/05 14:04:13 by ngonzale         ###   ########.fr       */
+/*   Updated: 2023/03/05 14:29:11 by ngonzale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	ft_start_philo(t_list *lst_philo)
 	t_philo	*philo;
 
 	philo = lst_philo->content;
-	philo->last_meal = ft_get_time();
 	if (pthread_mutex_init(&philo->fork, NULL) != 0)
 		return (0);
 	if (pthread_mutex_init(&philo->mutex_meals, NULL) != 0)

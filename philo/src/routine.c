@@ -69,8 +69,15 @@ void	*routine(void *arg)
 	else
 		next_philo = data->philos->content;
 	if (philo->n % 2)
+	{
+		ft_sleep(5);
+		philo->last_meal = ft_get_time();
 		ft_philo_life(data, philo, &philo->fork, &next_philo->fork);
+	}
 	else
+	{
+		philo->last_meal = ft_get_time();
 		ft_philo_life(data, philo, &next_philo->fork, &philo->fork);
+	}
 	return (NULL);
 }
